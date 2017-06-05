@@ -1,20 +1,20 @@
 <template>
-  <div class='container'>
+  <div class='container is-fluid'>
     <div id='leftSide'>
       <div class='codeBox'>
         <label>CSS</label>
-        <editor id="css" :content="msg" height="calc(100% - 18px)"></editor>
+        <editor id="css" :content="code.css" lang="css" height="calc(100% - 18px)"></editor>
       </div>
       <div class='splitter-horizontal splitter-first'></div>
       <div class='codeBox'>
         <label>HTML</label>
-        <editor id="html" :content="msg" height="calc(100% - 18px)"></editor>
+        <editor id="html" :content="code.html" lang="html" height="calc(100% - 18px)"></editor>
       </div>
       <div class='splitter-horizontal splitter-second'></div>
       <div class='codeBox'>
         <label>JavaScript</label>
         <!-- <div id='js'></div> -->
-        <editor id="js" :content="msg" height="calc(100% - 18px)"></editor>
+        <editor id="js" :content="code.js" lang="javascript" height="calc(100% - 18px)"></editor>
       </div>
 
     </div>
@@ -31,24 +31,28 @@
 <script>
 import editor from 'vue2-ace'
 import 'brace/mode/javascript'
+import 'brace/mode/css'
+import 'brace/mode/html'
 import 'brace/theme/chrome'
-// import ace from 'ace-builds/src-noconflict/ace.js'
-require('jquery-resizable-dom/dist/jquery-resizable.js')
 export default {
   name: 'codeground',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      code: {
+        css: '',
+        html: '',
+        js: ''
+      }
     }
   },
   methods: {},
   components: {
     editor
   },
-  created () {
-    global.jQuery = require('jquery')
-    var $ = global.jQuery
-    window.$ = $
+  mounted () {
+    var $ = window.$ = global.jQuery = require('jquery')
+    window.$ = $.extend(require('jquery-resizable-dom/dist/jquery-resizable.js'))
+
     $('#leftSide').resizable({
       handleSelector: '.splitter',
       resizeHeight: false,
@@ -69,15 +73,6 @@ export default {
       resizeWidth: false
     })
 /*
-    var cssEditor = ace.edit('css')
-   // cssEditor.setTheme('ace/theme/monokai')
-    cssEditor.getSession().setMode('ace/mode/css')
-
-    var htmlEditor = ace.edit('html')
-    htmlEditor.getSession().setMode('ace/mode/html')
-
-    var jsEditor = ace.edit('js')
-    jsEditor.getSession().setMode('ace/mode/javascript')
 
     document.getElementById('run').addEventListener('click', function () {
       var css = cssEditor.getValue()
@@ -110,6 +105,7 @@ export default {
 .container {
     display: flex;
     height: calc(100vh - 50px);
+    margin: 0;
 }
 
 /*  ----  LEFT SIDE ---- */
@@ -158,8 +154,7 @@ export default {
 
 #leftSide > .codeBox > label {
     margin: 0;
-    position: absolute;
-    top: 0;
+    color: white;
 }
 
 
