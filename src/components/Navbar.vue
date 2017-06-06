@@ -25,16 +25,34 @@
     <!-- This "nav-menu" is hidden on mobile -->
     <!-- Add the modifier "is-active" to display it on mobile -->
     <div class="nav-right nav-menu">
-      <a class="nav-item" @click="modal.register = true">
+      <a class="nav-item" @click="showRegister" v-if="!isLoggedIn">
         Register
       </a>
-      <a class="nav-item" @click="modal.login=true">
+      <a class="nav-item" @click="showLogin" v-if="!isLoggedIn">
         Login
       </a>
+
+      <a class="nav-item" @click="logout" v-if="isLoggedIn">
+        Logout
+      </a>
+
+      <div class="nav-item" v-if="isLoggedIn">
+        <div class="field is-grouped">
+          <p class="control">
+            <a class="button is-primary" @click="run">
+              <span class="icon">
+                <i class="fa fa-floppy-o"></i>
+              </span>
+              <span>Save</span>
+            </a>
+          </p>
+        </div>
+      </div>
+
       <div class="nav-item">
         <div class="field is-grouped">
           <p class="control">
-            <a class="button run" >
+            <a class="button run" @click="run">
               <span class="icon">
                 <i class="fa fa-play"></i>
               </span>
@@ -43,50 +61,58 @@
           </p>
         </div>
       </div>
-    </div>
-    <modal title="Register" :on-ok="register" ok-text="Register" :ok-loading="true" :is-show="modal.register" @close="modal.register=false" transition="fadeDown">
-    <p class="control has-icon">
-      <input class="input" type="email" placeholder="Email">
-      <i class="fa fa-envelope"></i>
-    </p>
-    <p class="control has-icon">
-      <input class="input" type="text" placeholder="Username">
-      <i class="fa fa-user"></i>
-    </p>
-    <p class="control has-icon">
-      <input class="input" type="password" placeholder="Password">
-      <i class="fa fa-lock"></i>
-    </p>
-    </modal>
 
-    <modal title="Login" :on-ok="login" ok-text="Login" :ok-loading="true" :is-show="modal.login" @close="modal.login=false" transition="fadeDown">
-      <p class="control has-icon">
-        <input class="input" type="email" placeholder="Email">
-        <i class="fa fa-envelope"></i>
-      </p>
-      <p class="control has-icon">
-        <input class="input" type="password" placeholder="Password">
-        <i class="fa fa-lock"></i>
-      </p>
-    </modal>
+    </div>
+
+    <register></register>
+    <login></login>
+
   </nav>
 </template>
 
 <script>
+import login from './modals/Login.vue'
+import register from './modals/Register.vue'
+import axios from 'axios'
+
 export default {
   name: 'Navbar',
+  components: { login, register },
   data () {
     return {
-      modal: {
-        register: false,
-        login: false
-      }
+    }
+  },
+  computed: {
+    isLoggedIn () {
+      return this.$store.state.user.session
     }
   },
   methods: {
-    register () {
+    logout () {
+      var vm = this
+      axios({
+        method: 'get',
+        url: 'http://localhost/codelearn/backend/index.php?url=user/logout',
+        withCredentials: true
+      })
+      .then(function (response) {
+        console.log(response.data)
+        vm.$notify.success({ content: response.data.message, placement: 'top-center' })
+        vm.$store.commit('SESSION', false)
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
     },
-    login () {}
+    showLogin () {
+      this.$bus.$emit('showLogin')
+    },
+    showRegister () {
+      this.$bus.$emit('showRegister')
+    },
+    run () {
+      this.$bus.$emit('executeCode')
+    }
   }
 }
 </script>

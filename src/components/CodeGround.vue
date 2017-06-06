@@ -1,21 +1,11 @@
 <template>
   <div class='container is-fluid'>
     <div id='leftSide'>
-      <div class='codeBox'>
-        <label>CSS</label>
-        <editor id="css" :content="code.css" lang="css" height="calc(100% - 18px)"></editor>
-      </div>
+      <css-editor></css-editor>
       <div class='splitter-horizontal splitter-first'></div>
-      <div class='codeBox'>
-        <label>HTML</label>
-        <editor id="html" :content="code.html" lang="html" height="calc(100% - 18px)"></editor>
-      </div>
+      <html-editor></html-editor>
       <div class='splitter-horizontal splitter-second'></div>
-      <div class='codeBox'>
-        <label>JavaScript</label>
-        <!-- <div id='js'></div> -->
-        <editor id="js" :content="code.js" lang="javascript" height="calc(100% - 18px)"></editor>
-      </div>
+      <js-editor></js-editor>
 
     </div>
 
@@ -29,11 +19,9 @@
 </template>
 
 <script>
-import editor from 'vue2-ace'
-import 'brace/mode/javascript'
-import 'brace/mode/css'
-import 'brace/mode/html'
-import 'brace/theme/chrome'
+import htmlEditor from './editors/html.vue'
+import cssEditor from './editors/css.vue'
+import jsEditor from './editors/js.vue'
 export default {
   name: 'codeground',
   data () {
@@ -45,9 +33,35 @@ export default {
       }
     }
   },
-  methods: {},
+  methods: {
+    executeCode () {
+      var iframe = document.getElementById('result').contentWindow.document
+      iframe.open()
+      var content = '<html><head><style>'
+      content += this.code.css
+      content += '</style></head><body>'
+      content += this.code.html
+      content += '<script>' + this.code.js + '<' + '/' + 'script>'
+      content += '</body></html>'
+      iframe.write(content)
+      iframe.close()
+      console.log('html: ' + this.code.html)
+      console.log('css: ' + this.code.css)
+      console.log('js: ' + this.code.js)
+    },
+    htmlEditorUpdate (value) {
+      console.log(value)
+      this.code.html = value
+    },
+    cssEditorUpdate (value) {
+      this.code.css = value
+    },
+    jsEditorUpdate (value) {
+      this.code.js = value
+    }
+  },
   components: {
-    editor
+    htmlEditor, cssEditor, jsEditor
   },
   mounted () {
     var $ = window.$ = global.jQuery = require('jquery')
@@ -72,34 +86,32 @@ export default {
       handleSelector: '.splitter-second',
       resizeWidth: false
     })
-/*
-
-    document.getElementById('run').addEventListener('click', function () {
-      var css = cssEditor.getValue()
-      var html = htmlEditor.getValue()
-      var js = jsEditor.getValue()
-
-      var iframe = document.getElementById('result').contentWindow.document
-      iframe.open()
-      var content = '<html><head><style>'
-      content += css
-      content += '</style></head><body>'
-      content += html
-      content += '<script>' + js + '<' + '/' + 'script>'
-      content += '</body></html>'
-      iframe.write(content)
-      iframe.close()
-
-      console.log('html: ' + html)
-      console.log('css ' + css)
-      console.log('js ' + js)
-    }) */
+  },
+  created () {
+    this.$bus.$on('executeCode', this.executeCode)
+    this.$bus.$on('html-editor-update', this.htmlEditorUpdate)
+    this.$bus.$on('css-editor-update', this.cssEditorUpdate)
+    this.$bus.$on('js-editor-update', this.jsEditorUpdate)
+  },
+  beforeDestroy () {
+    this.$bus.$off('executeCode', this.executeCode)
+    this.$bus.$off('html-editor-update', this.htmlEditorUpdate)
+    this.$bus.$off('css-editor-update', this.cssEditorUpdate)
+    this.$bus.$off('js-editor-update', this.jsEditorUpdate)
   }
 }
 </script>
 
+<style>
+  html {
+    overflow: hidden;
+  }
+</style>
 <!-- Add 'scoped' attribute to limit CSS to this component only -->
 <style scoped>
+html {
+  overflow: hidden;
+}
 /*  ----  CONTAINER ---- */
 
 .container {
@@ -120,45 +132,6 @@ export default {
     flex-direction: column;
 }
 
-#leftSide > .codeBox {
-    max-height: calc(100% - 36px);
-    min-height: 0%;
-    height: 33%;
-}
-
-#leftSide > .codeBox:first-of-type {
-    flex: 0 0 auto;
-}
-
-#leftSide > .codeBox:nth-child(3) {
-    flex: 0 1 auto;
-}
-
-#leftSide > .codeBox:last-of-type {
-    flex: 1 1 auto;
-    height: 0;
-}
-
-
-#leftSide > .codeBox > .ace_editor {
-    height: calc(100% - 18px);
-    margin: 0;
-    padding: 0;
-    
-}
-
-#leftSide > .codeBox > .ace_editor > textarea {
-  padding: 0;
-  margin: 0;
-}
-
-#leftSide > .codeBox > label {
-    margin: 0;
-    color: white;
-}
-
-
-
 /*  ----  RIGHT SIDE ---- */
 
 #outputBox {
@@ -171,7 +144,6 @@ export default {
     width: 100%;
     height: 100%;
 }
-
 
 /*  ----  SPLITTERS ---- */
 

@@ -3,13 +3,18 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import store from './vuex'
 
 Vue.config.productionTip = false
+
+const eventHub = new Vue() // event hub
+Vue.prototype.$bus = eventHub
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
+  store,
   template: '<App/>',
   components: { App }
 })
