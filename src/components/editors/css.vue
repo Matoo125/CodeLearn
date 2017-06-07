@@ -1,7 +1,7 @@
 <template>
   <div class='codeBox'>
     <label>CSS</label>
-    <editor id="css" :content="css" lang="css" height="calc(100% - 18px)"></editor>
+    <editor id="css" :content="css" :sync="true" lang="css" height="calc(100% - 18px)"></editor>
   </div>
 </template>
 
@@ -10,23 +10,36 @@ import editor from 'vue2-ace'
 import 'brace/mode/css'
 
 export default {
-  name: 'htmlEditor',
+  name: 'cssEditor',
   data () {
     return {
-      css: ''
+      css: '',
+      cssLive: ''
     }
   },
   components: {
     editor
   },
   methods: {
+    sendEditorContentToVuex () {
+      this.$store.commit('SET_CSS', this.cssLive)
+    },
     editorUpdate (value) {
-      this.css = value
-      this.$bus.$emit('css-editor-update', value)
+      this.cssLive = value
+    },
+    updateCodeFromVuex () {
+      this.cssLive = this.css = this.$store.state.code.css
     }
   },
   mounted () {
     this.$on('editor-update', this.editorUpdate)
+    this.$bus.$on('update-vuex-code', this.sendEditorContentToVuex)
+    this.$bus.$on('load-new-code-from-vuex', this.updateCodeFromVuex)
+  },
+  beforeDestroy () {
+    this.$off('editor-update', this.editorUpdate)
+    this.$bus.$off('update-vuex-code', this.sendEditorContentToVuex)
+    this.$bus.$off('load-new-code-from-vuex', this.updateCodeFromVuex)
   }
 }
 </script>

@@ -2,7 +2,7 @@
   <div class='codeBox'>
     <label>JavaScript</label>
     <!-- <div id='js'></div> -->
-    <editor name="js" id="js" :content="js" lang="javascript" height="calc(100% - 18px)"></editor>
+    <editor name="js" id="js" :content="js" :sync="true" lang="javascript" height="calc(100% - 18px)"></editor>
   </div>
 </template>
 
@@ -11,23 +11,36 @@ import editor from 'vue2-ace'
 import 'brace/mode/javascript'
 
 export default {
-  name: 'htmlEditor',
+  name: 'jsEditor',
   data () {
     return {
-      js: ''
+      js: '',
+      jsLive: ''
     }
   },
   components: {
     editor
   },
   methods: {
+    sendEditorContentToVuex () {
+      this.$store.commit('SET_JS', this.jsLive)
+    },
     editorUpdate (value) {
-      this.js = value
-      this.$bus.$emit('js-editor-update', value)
+      this.jsLive = value
+    },
+    updateCodeFromVuex () {
+      this.jsLive = this.js = this.$store.state.code.js
     }
   },
   mounted () {
     this.$on('editor-update', this.editorUpdate)
+    this.$bus.$on('update-vuex-code', this.sendEditorContentToVuex)
+    this.$bus.$on('load-new-code-from-vuex', this.updateCodeFromVuex)
+  },
+  beforeDestroy () {
+    this.$off('editor-update', this.editorUpdate)
+    this.$bus.$off('update-vuex-code', this.sendEditorContentToVuex)
+    this.$bus.$off('load-new-code-from-vuex', this.updateCodeFromVuex)
   }
 }
 </script>

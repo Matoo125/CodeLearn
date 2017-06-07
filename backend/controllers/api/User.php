@@ -88,7 +88,8 @@ class User extends UserController
 		    		'status'		=> 	'SUCCESS',
 		    		'message'		=>	'You are logged in', // success
 		    		'user_id'		=>	$user['id'],
-		    		'session_id'	=>	Session::get('user_id')
+		    		'user_name'		=>	$user['username'],
+		    		'user_email'	=>	$user['email']
 		    	];
 		} 
 

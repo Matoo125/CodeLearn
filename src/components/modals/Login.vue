@@ -4,11 +4,11 @@
 	  {{ modal.message }}
 	</alert>
 	  <p class="control has-icon">
-	    <input class="input" type="email" v-model="user.email" placeholder="Email">
+	    <input class="input" type="email" name="email" v-model="user.email" placeholder="Email">
 	    <i class="fa fa-envelope"></i>
 	  </p>
 	  <p class="control has-icon">
-	    <input class="input" type="password" v-model="user.password" placeholder="Password" @keyup.enter="login">
+	    <input class="input" type="password" name="password" v-model="user.password" placeholder="Password" @keyup.enter="login">
 	    <i class="fa fa-lock"></i>
 	  </p>
 	</modal>
@@ -53,6 +53,7 @@ export default {
         console.log(response.data)
         if (response.data.status === 'SUCCESS') { // YOU ARE LOGGED IN
           vm.$store.commit('SESSION', true)
+          vm.$store.commit('SET_USER', response.data)
           vm.$notify.success({ content: response.data.message, placement: 'top-center' })
           vm.modal.isShown = false
         } else { // DISPLAY ERROR MESSAGE

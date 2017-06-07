@@ -39,7 +39,7 @@
       <div class="nav-item" v-if="isLoggedIn">
         <div class="field is-grouped">
           <p class="control">
-            <a class="button is-primary" @click="run">
+            <a class="button is-primary" @click="showSave">
               <span class="icon">
                 <i class="fa fa-floppy-o"></i>
               </span>
@@ -48,6 +48,20 @@
           </p>
         </div>
       </div>
+
+      <div class="nav-item" v-if="isLoggedIn">
+        <div class="field is-grouped">
+          <p class="control">
+            <a class="button is-success" @click="showProjects">
+              <span class="icon">
+                <i class="fa fa-floppy-o"></i>
+              </span>
+              <span>Projects</span>
+            </a>
+          </p>
+        </div>
+      </div>
+
 
       <div class="nav-item">
         <div class="field is-grouped">
@@ -66,18 +80,21 @@
 
     <register></register>
     <login></login>
-
+    <save></save>
+    <projects></projects>
   </nav>
 </template>
 
 <script>
 import login from './modals/Login.vue'
 import register from './modals/Register.vue'
+import save from './modals/Save.vue'
+import projects from './modals/Projects.vue'
 import axios from 'axios'
 
 export default {
   name: 'Navbar',
-  components: { login, register },
+  components: { login, register, save, projects },
   data () {
     return {
     }
@@ -109,6 +126,12 @@ export default {
     },
     showRegister () {
       this.$bus.$emit('showRegister')
+    },
+    showSave () {
+      this.$bus.$emit('showSave')
+    },
+    showProjects () {
+      this.$bus.$emit('showProjects')
     },
     run () {
       this.$bus.$emit('executeCode')

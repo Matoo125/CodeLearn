@@ -26,38 +26,25 @@ export default {
   name: 'codeground',
   data () {
     return {
-      code: {
-        css: '',
-        html: '',
-        js: ''
-      }
     }
   },
   methods: {
     executeCode () {
+      // update vuex code values
+      this.$bus.$emit('update-vuex-code')
       var iframe = document.getElementById('result').contentWindow.document
       iframe.open()
       var content = '<html><head><style>'
-      content += this.code.css
+      content += this.$store.state.code.css
       content += '</style></head><body>'
-      content += this.code.html
-      content += '<script>' + this.code.js + '<' + '/' + 'script>'
+      content += this.$store.state.code.html
+      content += '<script>' + this.$store.state.code.js + '<' + '/' + 'script>'
       content += '</body></html>'
       iframe.write(content)
       iframe.close()
-      console.log('html: ' + this.code.html)
-      console.log('css: ' + this.code.css)
-      console.log('js: ' + this.code.js)
-    },
-    htmlEditorUpdate (value) {
-      console.log(value)
-      this.code.html = value
-    },
-    cssEditorUpdate (value) {
-      this.code.css = value
-    },
-    jsEditorUpdate (value) {
-      this.code.js = value
+      console.log('html: ' + this.$store.state.code.html)
+      console.log('css: ' + this.$store.state.code.css)
+      console.log('js: ' + this.$store.state.code.js)
     }
   },
   components: {
@@ -89,15 +76,9 @@ export default {
   },
   created () {
     this.$bus.$on('executeCode', this.executeCode)
-    this.$bus.$on('html-editor-update', this.htmlEditorUpdate)
-    this.$bus.$on('css-editor-update', this.cssEditorUpdate)
-    this.$bus.$on('js-editor-update', this.jsEditorUpdate)
   },
   beforeDestroy () {
     this.$bus.$off('executeCode', this.executeCode)
-    this.$bus.$off('html-editor-update', this.htmlEditorUpdate)
-    this.$bus.$off('css-editor-update', this.cssEditorUpdate)
-    this.$bus.$off('js-editor-update', this.jsEditorUpdate)
   }
 }
 </script>
