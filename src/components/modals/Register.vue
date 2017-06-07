@@ -4,19 +4,19 @@
   	  {{ modal.message }}
   	</alert>
     <p class="control has-icon">
-      <input class="input" type="text" v-model="user.username" placeholder="Username">
+      <input class="input" type="text" name="username" v-model="user.username" placeholder="Username">
       <i class="fa fa-user"></i>
     </p>
     <p class="control has-icon">
-      <input class="input" type="email" v-model="user.email" placeholder="Email">
+      <input class="input" type="email" name="email" v-model="user.email" placeholder="Email">
       <i class="fa fa-envelope"></i>
     </p>
     <p class="control has-icon">
-      <input class="input" type="password" v-model="user.password" placeholder="Password">
+      <input class="input" type="password" name="password" v-model="user.password" placeholder="Password">
       <i class="fa fa-lock"></i>
     </p>
     <p class="control has-icon">
-      <input class="input" type="password" v-model="user.passwordCheck" placeholder="Password Again">
+      <input class="input" type="password" name="passwordCheck" v-model="user.passwordCheck" @keyup.enter="register" placeholder="Password Again">
       <i class="fa fa-lock"></i>
     </p>
 	</modal>

@@ -16,7 +16,7 @@ class User extends Model
 			'email'		=>	$data['email'],
 			'role'		=>	1
 		];
-		$this->save($sql, $args);
+		return $this->save($sql, $args);
 	}
 
 	public function checkByEmail ($email)

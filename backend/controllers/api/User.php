@@ -14,7 +14,10 @@ class User extends UserController
 
 	public function register()
 	{
+
 		$_POST = json_decode(file_get_contents('php://input'), true);
+
+		$_POST = $_GET;
 		// echo json_encode($_POST);die;
 		if (!$_POST) return $this->data = [
 			'status' => 'ERROR',
