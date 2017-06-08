@@ -15,17 +15,15 @@ class User extends UserController
 	public function register()
 	{
 
-		$_POST = json_decode(file_get_contents('php://input'), true);
+		// $_POST = json_decode(file_get_contents('php://input'), true);
 
-		$_POST = $_GET;
-		// echo json_encode($_POST);die;
 		if (!$_POST) return $this->data = [
 			'status' => 'ERROR',
 			'message'	=>	'bad response type. '
 		];
 
-		if (!$_POST['username'] || !$_POST['email'] ||
-			!$_POST['password'] || !$_POST['passwordCheck']) {
+		if (!isset($_POST['username']) || !isset($_POST['username']) ||
+			!isset($_POST['password']) || !isset($_POST['passwordCheck'])) {
 			return $this->data = [
 				'status'	=>	'ERROR',
 				'message'	=>	'Missing information'
@@ -53,10 +51,16 @@ class User extends UserController
 
 		$data['password']	=	password_hash($data['password'], PASSWORD_DEFAULT);
 
-		if ($this->model->register($data)) {
+		if ($id = $this->model->register($data)) {
+			Session::set('user_id', $id);
 			return $this->data = [
 				'status'	=>	'SUCCESS',
-				'message'	=>	'You have been registered. '
+				'message'	=>	'You have been registered. ',
+				'user'		=>	[
+					'email'		=>	$data['email'],
+					'username'	=>	$data['username'],
+					'id'		=>	$id
+				]
 			];
 		}
 
@@ -90,9 +94,11 @@ class User extends UserController
 		    return $this->data = [
 		    		'status'		=> 	'SUCCESS',
 		    		'message'		=>	'You are logged in', // success
-		    		'user_id'		=>	$user['id'],
-		    		'user_name'		=>	$user['username'],
-		    		'user_email'	=>	$user['email']
+		    		'user'			=>	[
+			    			'email'		=>	$user['email'],
+			    			'username'	=>	$user['username'],
+			    			'id'		=>	$user['id']
+		    		]
 		    	];
 		} 
 
@@ -121,7 +127,4 @@ class User extends UserController
       ];
 	}
 
-	public function ss () {
-		Session::set('user_id', 1);
-	}
 }

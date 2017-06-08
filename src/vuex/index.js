@@ -22,7 +22,7 @@ const store = new Vuex.Store({
     checkLogin (context) {
       axios({
         method: 'get',
-        url: 'http://localhost/codelearn/backend/index.php?url=user/is_logged_in',
+        url: process.env.API + 'user/is_logged_in',
         withCredentials: true
       })
       .then(function (response) {

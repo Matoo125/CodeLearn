@@ -49,15 +49,23 @@ export default {
     register () {
       var vm = this
       console.log('register has beed clicked')
-      axios.post('http://localhost/codelearn/backend/index.php?url=user/register', {
-        username: this.user.username,
-        email: this.user.email,
-        password: this.user.password,
-        passwordCheck: this.user.passwordCheck
+      axios({
+        method: 'post',
+        url: process.env.API + 'user/register',
+        withCredentials: true,
+        data: {
+          username: this.user.username,
+          email: this.user.email,
+          password: this.user.password,
+          passwordCheck: this.user.passwordCheck
+        }
       })
       .then(function (response) {
         console.log(response.data)
         if (response.data.status === 'SUCCESS') {
+          vm.$store.commit('SESSION', true)
+          vm.$store.commit('SET_USER', response.data)
+          vm.$notify.success({ content: response.data.message, placement: 'top-center' })
           vm.modal.isShown = false
         } else {
           console.log(response.data.message)
