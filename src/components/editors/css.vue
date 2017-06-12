@@ -1,6 +1,6 @@
 <template>
   <div class='codeBox'>
-    <label>CSS</label>
+    <label class="editorLabel">CSS</label>
     <editor id="css" :content="css" :sync="true" lang="css" height="calc(100% - 18px)"></editor>
   </div>
 </template>

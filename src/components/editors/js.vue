@@ -1,6 +1,6 @@
 <template>
   <div class='codeBox'>
-    <label>JavaScript</label>
+    <label class="editorLabel">JavaScript</label>
     <!-- <div id='js'></div> -->
     <editor name="js" id="js" :content="js" :sync="true" lang="javascript" height="calc(100% - 18px)"></editor>
   </div>

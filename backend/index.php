@@ -10,10 +10,14 @@ require_once('../vendor/autoload.php');
 require_once('controllers/api/Home.php');
 require_once('controllers/api/User.php');
 require_once('controllers/api/Code.php');
+require_once('controllers/api/Learn.php');
 require_once('model/User.php');
+require_once('model/Topic.php');
+require_once('model/Lesson.php');
 
 define('DS', DIRECTORY_SEPARATOR);
 define('ROOT', dirname(__FILE__));
+define('LESSONS', dirname(__DIR__) . DS . 'data' . DS . 'lessons');
 
 header('Access-Control-Allow-Origin: http://localhost:8080'); 
 header('Access-Control-Allow-Credentials: true');

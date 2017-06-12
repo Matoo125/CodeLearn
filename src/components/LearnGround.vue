@@ -2,13 +2,19 @@
   <div class='container is-fluid'>
     <div id='leftSide'>
 
-      <css-editor v-if="show.css"></css-editor>
 
-      <div class='splitter-horizontal splitter-first' v-if="show.html"></div>
-      <html-editor v-if="show.html"></html-editor>        
+        <tabs type="toggle" :is-full-width="true">
+          <tab-item label="HTML" icon="html5">
+            <html-editor></html-editor>
+          </tab-item>
+          <tab-item label="CSS" icon="css3">
+            <css-editor></css-editor>
+          </tab-item>
+          <tab-item label="JS" icon="code">
+            <js-editor></js-editor>
+          </tab-item>
+        </tabs>
 
-      <div class='splitter-horizontal splitter-second' v-if="show.js"></div>
-      <js-editor v-if="show.js"></js-editor>
 
     </div>
 
@@ -18,22 +24,28 @@
       <iframe id='result'>
       </iframe>
     </div>
+
+  <modal name="hello-world">
+    hello, world!
+  </modal>
+
+
+
   </div>
+
 </template>
 
 <script>
+
 import htmlEditor from './editors/html.vue'
 import cssEditor from './editors/css.vue'
 import jsEditor from './editors/js.vue'
+import vmodal from 'vue-js-modal'
+
 export default {
-  name: 'codeground',
+  name: 'LearnGround',
   data () {
     return {
-      show: {
-        css: true,
-        html: true,
-        js: true
-      }
     }
   },
   computed: {
@@ -64,6 +76,7 @@ export default {
     htmlEditor, cssEditor, jsEditor
   },
   mounted () {
+    vmodal.$modal.show('hello-world')
     var $ = window.$ = global.jQuery = require('jquery')
     window.$ = $.extend(require('jquery-resizable-dom/dist/jquery-resizable.js'))
 
@@ -76,15 +89,6 @@ export default {
       onDragStop: function (event, $el) {
         $('iframe').css('pointer-events', 'auto')
       }
-    })
-
-    $('#css').parent().resizable({
-      handleSelector: '.splitter-first',
-      resizeWidth: false
-    })
-    $('#html').parent().resizable({
-      handleSelector: '.splitter-second',
-      resizeWidth: false
     })
   },
   created () {
@@ -100,9 +104,21 @@ export default {
   html {
     overflow: hidden;
   }
+  /* ---- tabs --- */
+  .tabs .tab-content{ margin: 0; }
+  .tab-list > li {
+    background-color:white;
+  }
+  .editorLabel {
+  display: none;
+}
+.ace_editor {
+  height: 100%!important;
+}
+
 </style>
 <!-- Add 'scoped' attribute to limit CSS to this component only -->
-<style scoped>
+<style lang="scss" scoped>
 html {
   overflow: hidden;
 }
@@ -124,19 +140,23 @@ html {
     flex: 0 0 auto;
     display: flex;
     flex-direction: column;
+    .codeBox {
+      height: 100%;
+    }
+
 }
+
 
 /*  ----  RIGHT SIDE ---- */
 
 #outputBox {
     height: 100%;
     flex: 1 1 auto;
-}
-
-#outputBox > iframe#result {
-    border: none;
-    width: 100%;
-    height: 100%;
+    iframe {
+      border: none;
+      width: 100%;
+      height: 100%;
+    }
 }
 
 /*  ----  SPLITTERS ---- */

@@ -2,13 +2,22 @@
   <div class='container is-fluid'>
     <div id='leftSide'>
 
-      <css-editor v-if="show.css"></css-editor>
+     <grid-layout
+                 :layout='layout'
+                 :col-num='12'
+                 :row-height='30'
+                 :is-draggable='false'
+                 :is-resizable='true'
+                 :vertical-compact='true'
+                 :margin='[10, 10]'
+                 :use-css-transforms='true'
+         >
+         <grid-item :x="grid.html.x" :y="grid.html.y" :w="grid.html.w" :h="grid.html.h" class="gridItem" :i="grid.html.i">
+           <html-editor></html-editor>
+         </grid-item>
 
-      <div class='splitter-horizontal splitter-first' v-if="show.html"></div>
-      <html-editor v-if="show.html"></html-editor>        
 
-      <div class='splitter-horizontal splitter-second' v-if="show.js"></div>
-      <js-editor v-if="show.js"></js-editor>
+         </grid-layout>
 
     </div>
 
@@ -22,18 +31,28 @@
 </template>
 
 <script>
+/*
 import htmlEditor from './editors/html.vue'
 import cssEditor from './editors/css.vue'
 import jsEditor from './editors/js.vue'
+ */
+import htmlEditor from './editors/html.vue'
+
+import VueGridLayout from 'vue-grid-layout'
+var GridLayout = VueGridLayout.GridLayout
+var GridItem = VueGridLayout.GridItem
 export default {
-  name: 'codeground',
+  name: 'LearnGround',
   data () {
     return {
-      show: {
-        css: true,
-        html: true,
-        js: true
-      }
+      grid: {
+        html: {'x': 0, 'y': 0, 'w': 12, 'h': 10, 'i': 1}
+      },
+      layout: [
+      {'x': 0, 'y': 0, 'w': 12, 'h': 10},
+      {'x': 2, 'y': 0, 'w': 12, 'h': 10},
+      {'x': 4, 'y': 0, 'w': 12, 'h': 10}
+      ]
     }
   },
   computed: {
@@ -61,31 +80,9 @@ export default {
     }
   },
   components: {
-    htmlEditor, cssEditor, jsEditor
+    GridLayout, GridItem, htmlEditor// htmlEditor, cssEditor, jsEditor
   },
   mounted () {
-    var $ = window.$ = global.jQuery = require('jquery')
-    window.$ = $.extend(require('jquery-resizable-dom/dist/jquery-resizable.js'))
-
-    $('#leftSide').resizable({
-      handleSelector: '.splitter',
-      resizeHeight: false,
-      onDragStart: function (event, $el) {
-        $('iframe').css('pointer-events', 'none')
-      },
-      onDragStop: function (event, $el) {
-        $('iframe').css('pointer-events', 'auto')
-      }
-    })
-
-    $('#css').parent().resizable({
-      handleSelector: '.splitter-first',
-      resizeWidth: false
-    })
-    $('#html').parent().resizable({
-      handleSelector: '.splitter-second',
-      resizeWidth: false
-    })
   },
   created () {
     this.$bus.$on('executeCode', this.executeCode)
@@ -137,6 +134,11 @@ html {
     border: none;
     width: 100%;
     height: 100%;
+}
+
+/* ---- GRID --- */
+.gridItem {
+  background-color:white;
 }
 
 /*  ----  SPLITTERS ---- */

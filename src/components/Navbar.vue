@@ -24,7 +24,7 @@
 
     <!-- This "nav-menu" is hidden on mobile -->
     <!-- Add the modifier "is-active" to display it on mobile -->
-    <div class="nav-right nav-menu">
+    <div class="nav-right nav-menu" v-if="public">
       <a class="nav-item" @click="showRegister" v-if="!isLoggedIn">
         Register
       </a>
@@ -62,6 +62,18 @@
         </div>
       </div>
 
+      <div class="nav-item" v-if="isLoggedIn">
+        <div class="field is-grouped">
+          <p class="control">
+            <a class="button is-warning" @click="showSidebar">
+              <span class="icon">
+                <i class="fa fa-floppy-o"></i>
+              </span>
+              <span>Learn</span>
+            </a>
+          </p>
+        </div>
+      </div>
 
       <div class="nav-item">
         <div class="field is-grouped">
@@ -78,6 +90,8 @@
 
     </div>
 
+
+    <sidebar></sidebar>
     <register></register>
     <login></login>
     <save></save>
@@ -90,13 +104,16 @@ import login from './modals/Login.vue'
 import register from './modals/Register.vue'
 import save from './modals/Save.vue'
 import projects from './modals/Projects.vue'
+import sidebar from './modals/Sidebar.vue'
 import axios from 'axios'
 
 export default {
   name: 'Navbar',
-  components: { login, register, save, projects },
+  components: { login, register, save, projects, sidebar },
   data () {
     return {
+      sidebar: false,
+      public: true
     }
   },
   computed: {
@@ -132,6 +149,9 @@ export default {
     },
     showProjects () {
       this.$bus.$emit('showProjects')
+    },
+    showSidebar () {
+      this.$bus.$emit('showSidebar')
     },
     run () {
       this.$bus.$emit('executeCode')
