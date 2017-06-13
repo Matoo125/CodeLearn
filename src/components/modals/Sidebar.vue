@@ -19,7 +19,7 @@
     </p>
     <ul class="menu-list">
       <li v-for="lesson in topic.lessons">
-        <a>
+        <a @click="lessonSelected(lesson)">
           {{ topic.id }}.{{ lesson.turn }} {{ lesson.title }}
         </a>
       </li>
@@ -57,6 +57,9 @@ export default {
         .catch(error => {
           console.log(error)
         })
+    },
+    lessonSelected (lesson) {
+      this.$bus.$emit('lessonSelected', lesson)
     }
   }
 }

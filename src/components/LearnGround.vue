@@ -20,10 +20,12 @@
 
       <div class='splitter'></div>
 
-    <div id='outputBox'>
-      <iframe id='result'>
-      </iframe>
-    </div>
+          <tabs type="toggle" :is-full-width="true" style="white-space: pre-wrap">
+            <tab-item label="Prepare" icon="book" v-html="marked(lesson.theory)"></tab-item>
+            <tab-item label="Exercise" icon="thumb-tack" v-html="marked(lesson.exercise)"></tab-item>
+            <tab-item label="See" icon="window-maximize"><iframe id="result"></iframe></tab-item>
+          </tabs>
+
 
   <modal name="hello-world">
     hello, world!
@@ -36,21 +38,21 @@
 </template>
 
 <script>
-
+import marked from 'marked'
 import htmlEditor from './editors/html.vue'
 import cssEditor from './editors/css.vue'
 import jsEditor from './editors/js.vue'
-import vmodal from 'vue-js-modal'
-
+import hljs from 'highlight.js'
+marked.setOptions({
+  highlight: function (code) {
+    return hljs.highlightAuto(code).value
+  }
+})
 export default {
   name: 'LearnGround',
   data () {
     return {
-    }
-  },
-  computed: {
-    activeModules () {
-      this.show.filter(function (x) { return x.select }).length
+      lesson: {}
     }
   },
   methods: {
@@ -70,13 +72,15 @@ export default {
       console.log('html: ' + this.$store.state.code.html)
       console.log('css: ' + this.$store.state.code.css)
       console.log('js: ' + this.$store.state.code.js)
+    },
+    marked (input) {
+      return input ? marked(input) : ''
     }
   },
   components: {
     htmlEditor, cssEditor, jsEditor
   },
   mounted () {
-    vmodal.$modal.show('hello-world')
     var $ = window.$ = global.jQuery = require('jquery')
     window.$ = $.extend(require('jquery-resizable-dom/dist/jquery-resizable.js'))
 
@@ -93,9 +97,14 @@ export default {
   },
   created () {
     this.$bus.$on('executeCode', this.executeCode)
+    this.$bus.$on('lessonSelected', lesson => {
+      console.log(lesson)
+      this.lesson = lesson
+    })
   },
   beforeDestroy () {
     this.$bus.$off('executeCode', this.executeCode)
+    this.$bus.$off('lessonSelected')
   }
 }
 </script>
@@ -152,11 +161,12 @@ html {
 #outputBox {
     height: 100%;
     flex: 1 1 auto;
-    iframe {
-      border: none;
-      width: 100%;
-      height: 100%;
-    }
+}
+
+iframe {
+  border: none;
+  width: 100%;
+  height: 100%;
 }
 
 /*  ----  SPLITTERS ---- */

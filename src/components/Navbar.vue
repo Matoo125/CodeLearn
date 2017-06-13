@@ -113,7 +113,8 @@ export default {
   data () {
     return {
       sidebar: false,
-      public: true
+      public: true,
+      page: null
     }
   },
   computed: {
