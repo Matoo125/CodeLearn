@@ -37,7 +37,7 @@ export default {
       console.log('save has beed clicked')
       axios({
         method: 'get',
-        url: 'http://localhost/codelearn/backend/index.php?url=code/save',
+        url: process.env.API + 'code/save',
         withCredentials: true,
         params: {
           action: 'create',

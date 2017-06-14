@@ -42,7 +42,7 @@ export default {
       console.log('login has beed clicked')
       axios({
         method: 'post',
-        url: 'http://localhost/codelearn/backend/index.php?url=user/login',
+        url: process.env.API + 'user/login',
         withCredentials: true,
         data: {
           email: this.user.email,

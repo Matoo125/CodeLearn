@@ -3,5 +3,5 @@ var prodEnv = require('./prod.env')
 
 module.exports = merge(prodEnv, {
   NODE_ENV: '"development"',
-  API: '"http://localhost/codelearn/backend/index.php?url="'
+  API: '"http://localhost/m4codelearn/backend/index.php?url="'
 })

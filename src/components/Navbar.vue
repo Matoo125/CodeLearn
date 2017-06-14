@@ -127,7 +127,7 @@ export default {
       var vm = this
       axios({
         method: 'get',
-        url: 'http://localhost/codelearn/backend/index.php?url=user/logout',
+        url: process.env.API + 'user/logout',
         withCredentials: true
       })
       .then(function (response) {

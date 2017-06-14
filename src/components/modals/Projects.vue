@@ -39,7 +39,7 @@ export default {
       let vm = this
       axios({
         method: 'get',
-        url: 'http://localhost/codelearn/backend/index.php?url=code/getProject',
+        url: process.env.API + 'code/getProject',
         withCredentials: true,
         params: {
           title: vm.selectedProject
@@ -65,7 +65,7 @@ export default {
       // vm.$refs.projects.isLoading = true
       axios({
         method: 'get',
-        url: 'http://localhost/codelearn/backend/index.php?url=code/getProjects',
+        url: process.env.API + 'code/getProjects',
         withCredentials: true,
         params: {}
       })
