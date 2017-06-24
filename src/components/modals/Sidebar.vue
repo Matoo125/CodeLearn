@@ -1,5 +1,5 @@
 <template>
-<b-aside :is-show="isShown" title="Lessons" @close="isShown=false" placement="right">
+<b-aside :is-show="isShown" :show-footer="false" title="Lessons" @close="isShown=false" placement="right">
 <!-- 
      <li><a>1.0 Introduction</a></li>
       <li><a>1.1 Tags</a></li>
@@ -60,6 +60,7 @@ export default {
     },
     lessonSelected (lesson) {
       this.$bus.$emit('lessonSelected', lesson)
+      this.isShown = false
     }
   }
 }

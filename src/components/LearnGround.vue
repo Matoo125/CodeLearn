@@ -21,9 +21,15 @@
       <div class='splitter'></div>
 
           <tabs type="toggle" :is-full-width="true" style="white-space: pre-wrap">
-            <tab-item label="Prepare" icon="book" v-html="marked(lesson.theory)"></tab-item>
-            <tab-item label="Exercise" icon="thumb-tack" v-html="marked(lesson.exercise)"></tab-item>
-            <tab-item label="See" icon="window-maximize"><iframe id="result"></iframe></tab-item>
+            <tab-item label="Prepare" icon="book">
+              <div class="inTab" v-html="marked(lesson.theory)"></div>
+            </tab-item>
+            <tab-item label="Exercise" icon="thumb-tack">
+              <div class="inTab" v-html="marked(lesson.exercise)"></div>
+            </tab-item>
+            <tab-item label="See" class="resultTab" icon="window-maximize">
+              <iframe id="result"></iframe>
+            </tab-item>
           </tabs>
 
 
@@ -52,6 +58,7 @@ export default {
   name: 'LearnGround',
   data () {
     return {
+      activeTabRight: 0,
       lesson: {}
     }
   },
@@ -109,7 +116,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
   html {
     overflow: hidden;
   }
@@ -123,6 +130,20 @@ export default {
 }
 .ace_editor {
   height: 100%!important;
+}
+
+.tabs .tab-pane {
+  overflow-x: scroll;
+}
+
+.inTab a {
+  display: inline;
+  padding: 0;
+  border: 0 !important;
+  color: blue;
+  &:hover {
+    background-color: rgba(0,0,0,0) !important;
+  }
 }
 
 </style>

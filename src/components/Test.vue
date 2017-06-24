@@ -2,43 +2,66 @@
   <div class='container is-fluid'>
     <div id='leftSide'>
 
-      <css-editor v-if="show.css"></css-editor>
 
-      <div class='splitter-horizontal splitter-first' v-if="show.html"></div>
-      <html-editor v-if="show.html"></html-editor>        
+        <tabs type="toggle" :is-full-width="true">
+          <tab-item label="HTML" icon="html5">
+            <html-editor></html-editor>
+          </tab-item>
+          <tab-item label="CSS" icon="css3">
+            <css-editor></css-editor>
+          </tab-item>
+          <tab-item label="JS" icon="code">
+            <js-editor></js-editor>
+          </tab-item>
+        </tabs>
 
-      <div class='splitter-horizontal splitter-second' v-if="show.js"></div>
-      <js-editor v-if="show.js"></js-editor>
 
     </div>
 
       <div class='splitter'></div>
 
-    <div id='outputBox'>
-      <iframe id='result'>
-      </iframe>
-    </div>
+          <tabs type="toggle" :is-full-width="true" style="white-space: pre-wrap">
+            <tab-item label="Prepare" icon="book">
+              <div class="inTab" v-html="marked(lesson.theory)"></div>
+            </tab-item>
+            <tab-item label="Exercise" icon="thumb-tack">
+              <div class="inTab" v-html="marked(lesson.exercise)"></div>
+            </tab-item>
+            <tab-item label="See" class="resultTab" icon="window-maximize">
+              <iframe id="result"></iframe>
+            </tab-item>
+          </tabs>
+
+
+  <modal name="hello-world">
+    hello, world!
+  </modal>
+
+
+
   </div>
+
 </template>
 
 <script>
+import axios from 'axios'
+import marked from 'marked'
 import htmlEditor from './editors/html.vue'
 import cssEditor from './editors/css.vue'
 import jsEditor from './editors/js.vue'
+import hljs from 'highlight.js'
+marked.setOptions({
+  highlight: function (code) {
+    return hljs.highlightAuto(code).value
+  }
+})
 export default {
-  name: 'codeground',
+  name: 'LearnGround',
   data () {
     return {
-      show: {
-        css: true,
-        html: true,
-        js: true
+      activeTabRight: 0,
+      lesson: {
       }
-    }
-  },
-  computed: {
-    activeModules () {
-      this.show.filter(function (x) { return x.select }).length
     }
   },
   methods: {
@@ -58,6 +81,9 @@ export default {
       console.log('html: ' + this.$store.state.code.html)
       console.log('css: ' + this.$store.state.code.css)
       console.log('js: ' + this.$store.state.code.js)
+    },
+    marked (input) {
+      return input ? marked(input) : ''
     }
   },
   components: {
@@ -77,32 +103,62 @@ export default {
         $('iframe').css('pointer-events', 'auto')
       }
     })
-
-    $('#css').parent().resizable({
-      handleSelector: '.splitter-first',
-      resizeWidth: false
-    })
-    $('#html').parent().resizable({
-      handleSelector: '.splitter-second',
-      resizeWidth: false
-    })
   },
   created () {
+    axios({
+      method: 'get',
+      url: process.env.API + 'learn/load'
+
+    }).then(response => {
+      console.log(response.data.topics[0].lessons[1])
+      this.lesson = response.data.topics[0].lessons[1]
+    }).catch(error => { console.log(error) })
     this.$bus.$on('executeCode', this.executeCode)
+    this.$bus.$on('lessonSelected', lesson => {
+      console.log(lesson)
+      this.lesson = lesson
+    })
   },
   beforeDestroy () {
     this.$bus.$off('executeCode', this.executeCode)
+    this.$bus.$off('lessonSelected')
   }
 }
 </script>
 
-<style>
+<style lang="scss">
   html {
     overflow: hidden;
   }
+  /* ---- tabs --- */
+  .tabs .tab-content{ margin: 0; }
+  .tab-list > li {
+    background-color:white;
+  }
+  .editorLabel {
+  display: none;
+}
+.ace_editor {
+  height: 100%!important;
+}
+
+.tabs .tab-pane {
+  overflow-x: scroll;
+}
+
+.inTab a {
+  display: inline;
+  padding: 0;
+  border: 0 !important;
+  color: blue;
+  &:hover {
+    background-color: rgba(0,0,0,0) !important;
+  }
+}
+
 </style>
 <!-- Add 'scoped' attribute to limit CSS to this component only -->
-<style scoped>
+<style lang="scss" scoped>
 html {
   overflow: hidden;
 }
@@ -124,7 +180,12 @@ html {
     flex: 0 0 auto;
     display: flex;
     flex-direction: column;
+    .codeBox {
+      height: 100%;
+    }
+
 }
+
 
 /*  ----  RIGHT SIDE ---- */
 
@@ -133,10 +194,10 @@ html {
     flex: 1 1 auto;
 }
 
-#outputBox > iframe#result {
-    border: none;
-    width: 100%;
-    height: 100%;
+iframe {
+  border: none;
+  width: 100%;
+  height: 100%;
 }
 
 /*  ----  SPLITTERS ---- */
