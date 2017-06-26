@@ -20,17 +20,17 @@
 
       <div class='splitter'></div>
 
-          <tabs type="toggle" :is-full-width="true" style="white-space: pre-wrap">
-            <tab-item label="Prepare" icon="book">
-              <div class="inTab" v-html="marked(lesson.theory)"></div>
-            </tab-item>
-            <tab-item label="Exercise" icon="thumb-tack">
-              <div class="inTab" v-html="marked(lesson.exercise)"></div>
-            </tab-item>
-            <tab-item label="See" class="resultTab" icon="window-maximize">
-              <iframe id="result"></iframe>
-            </tab-item>
-          </tabs>
+       <tabs type="toggle" :is-full-width="true" class="tabs-scroll" style="white-space: pre-wrap">
+         <tab-item label="Prepare" icon="book">
+           <div class="inTab" v-html="marked(lesson.theory)"></div>
+         </tab-item>
+         <tab-item label="Exercise" icon="thumb-tack">
+           <div class="inTab" v-html="marked(lesson.exercise)"></div>
+         </tab-item>
+         <tab-item label="See" class="resultTab" icon="window-maximize">
+           <iframe id="result"></iframe>
+         </tab-item>
+       </tabs>
 
 
   <modal name="hello-world">
@@ -132,9 +132,18 @@ export default {
   height: 100%!important;
 }
 
-.tabs .tab-pane {
+.tabs-scroll.tabs .tab-pane {
   overflow-x: scroll;
+
 }
+
+.tab-pane blockquote {
+  background-color: #f5f7fa;
+  border-left: 5px solid #d3d6db;
+  padding: 1.5em;
+  display: flex;
+}
+
 
 .inTab a {
   display: inline;
@@ -174,6 +183,10 @@ html {
       height: 100%;
     }
 
+    .tabs .tabs-pane {
+      overflow-x: hide;
+    }
+
 }
 
 
@@ -188,6 +201,10 @@ iframe {
   border: none;
   width: 100%;
   height: 100%;
+}
+
+.inTab {
+  padding: 25px;
 }
 
 /*  ----  SPLITTERS ---- */
