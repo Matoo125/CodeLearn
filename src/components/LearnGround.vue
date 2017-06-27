@@ -20,12 +20,21 @@
 
       <div class='splitter'></div>
 
-       <tabs type="toggle" :is-full-width="true" class="tabs-scroll" style="white-space: pre-wrap">
+       <tabs type="toggle" :is-full-width="true" class="tabs-scroll">
          <tab-item label="Prepare" icon="book">
+          <div class="title is-2 has-text-centered lessonHeader">{{ lesson.topic_id }}.{{ lesson.turn }} - {{ lesson.title }} | Theory</div>
+          <hr>
            <div class="inTab" v-html="marked(lesson.theory)"></div>
          </tab-item>
          <tab-item label="Exercise" icon="thumb-tack">
+           <div class="title is-2 has-text-centered lessonHeader">{{ lesson.topic_id }}.{{ lesson.turn }} - {{ lesson.title }} | Project</div>
+          <hr>
            <div class="inTab" v-html="marked(lesson.exercise)"></div>
+           <collapse>
+             <collapse-item v-for="solution in lesson.solutions" title="Solution">
+               <div v-html="marked(solution.solution)"></div>
+             </collapse-item>
+           </collapse>
          </tab-item>
          <tab-item label="See" class="resultTab" icon="window-maximize">
            <iframe id="result"></iframe>
@@ -137,6 +146,8 @@ export default {
 
 }
 
+
+
 .tab-pane blockquote {
   background-color: #f5f7fa;
   border-left: 5px solid #d3d6db;
@@ -152,6 +163,26 @@ export default {
   color: blue;
   &:hover {
     background-color: rgba(0,0,0,0) !important;
+  }
+}
+
+.inTab {
+  line-height: 1.7em;
+  white-space: normal;
+  ul, ol {
+    display: block !important;
+    padding-left: 20px;
+  } ul {
+    list-style-type: disc;
+  }
+  li {
+    display: list-item;
+  }
+  p, blockquote, ul, pre, article {
+    margin-bottom: 15px;
+  }
+  blockquote {
+    padding: 1em 1.0em 0 1.5em;
   }
 }
 
@@ -204,8 +235,14 @@ iframe {
 }
 
 .inTab {
-  padding: 25px;
+  padding: 0 25px 25px 25px;
+
 }
+
+.lessonHeader {
+  margin: .7em 0 .4em 0;
+}
+
 
 /*  ----  SPLITTERS ---- */
 

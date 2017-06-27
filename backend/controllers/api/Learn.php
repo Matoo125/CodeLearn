@@ -9,21 +9,6 @@ class Learn extends Controller
 {
 	public function index()
 	{
-		//echo LESSONS; 
-		$topics = array_slice(scandir(LESSONS), 2);
-		// print_r($topics);
-		$response = [];
-
-		foreach ($topics as $topic) {
-			$numbers = array_slice(scandir(LESSONS.DS.$topic), 2);
-			// print_r($numbers);
-
-			foreach ($numbers as $number) {
-				$lecture = array_slice(scandir(LESSONS.DS.$topic.DS.$number), 2);
-				array_push($response, [$number => $lecture[0]]);
-			}
-		}
-		Response::success('Lessons are loaded', [$response]);
 
 	}
 
@@ -32,9 +17,16 @@ class Learn extends Controller
 		$topic = $this->getModel('Topic');
 		$topics = $topic->getTopics('id, title');
 
+		$solution = $this->getModel('Solution');
+
 		foreach ($topics as $topic) {
 			$lesson = $this->getModel('Lesson');
 			$lessons = $lesson->getByTopicId($topic['id']);
+
+			foreach ((array) $lessons as $key => $lesson) {
+				$lessons[$key]['solutions'] = $solution->getForLesson($lesson['id']);
+
+			}
 
 			$topics[$topic['id'] - 1]['lessons'] = $lessons;
 		}

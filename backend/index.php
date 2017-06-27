@@ -14,6 +14,7 @@ require_once('controllers/api/Learn.php');
 require_once('model/User.php');
 require_once('model/Topic.php');
 require_once('model/Lesson.php');
+require_once('model/Solution.php');
 
 define('DS', DIRECTORY_SEPARATOR);
 define('ROOT', dirname(__FILE__));

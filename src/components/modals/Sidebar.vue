@@ -25,8 +25,6 @@
       </li>
     </ul>
   </div >
-
-
 </b-aside>
 </template>
 
