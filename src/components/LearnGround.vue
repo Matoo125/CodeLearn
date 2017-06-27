@@ -31,7 +31,7 @@
           <hr>
            <div class="inTab" v-html="marked(lesson.exercise)"></div>
            <collapse>
-             <collapse-item v-for="solution in lesson.solutions" title="Solution">
+             <collapse-item v-for="solution in lesson.solutions" title="Solution" key="solution.id">
                <div v-html="marked(solution.solution)"></div>
              </collapse-item>
            </collapse>
