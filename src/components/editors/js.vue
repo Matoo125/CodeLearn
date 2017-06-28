@@ -1,5 +1,5 @@
 <template>
-  <div class='codeBox'>
+  <div class='codeBox' @keyup.120="run">
     <label class="editorLabel">JavaScript</label>
     <!-- <div id='js'></div> -->
     <editor name="js" id="js" :content="js" :sync="true" lang="javascript" height="calc(100% - 18px)"></editor>
@@ -22,6 +22,9 @@ export default {
     editor
   },
   methods: {
+    run () {
+      this.$bus.$emit('executeCode')
+    },
     sendEditorContentToVuex () {
       this.$store.commit('SET_JS', this.jsLive)
     },

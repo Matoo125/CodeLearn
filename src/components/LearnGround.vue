@@ -5,7 +5,7 @@
 
         <tabs type="toggle" :is-full-width="true">
           <tab-item label="HTML" icon="html5">
-            <html-editor></html-editor>
+            <html-editor @keyup.120="executeCode"></html-editor>
           </tab-item>
           <tab-item label="CSS" icon="css3">
             <css-editor></css-editor>
@@ -22,13 +22,17 @@
 
        <tabs type="toggle" :is-full-width="true" class="tabs-scroll">
          <tab-item label="Prepare" icon="book">
-          <div class="title is-2 has-text-centered lessonHeader">{{ lesson.topic_id }}.{{ lesson.turn }} - {{ lesson.title }} | Theory</div>
-          <hr>
+          <div v-if="lesson.id" class="title is-2 has-text-centered lessonHeader">
+            {{ lesson.topic_id }}.{{ lesson.turn }} - {{ lesson.title }} | Theory
+            <hr>
+          </div>
            <div class="inTab" v-html="marked(lesson.theory)"></div>
          </tab-item>
          <tab-item label="Exercise" icon="thumb-tack">
-           <div class="title is-2 has-text-centered lessonHeader">{{ lesson.topic_id }}.{{ lesson.turn }} - {{ lesson.title }} | Project</div>
-          <hr>
+           <div v-if="lesson.id" class="title is-2 has-text-centered lessonHeader">
+            {{ lesson.topic_id }}.{{ lesson.turn }} - {{ lesson.title }} | Practise
+             <hr>
+          </div>
            <div class="inTab" v-html="marked(lesson.exercise)"></div>
            <collapse>
              <collapse-item v-for="solution in lesson.solutions" title="Solution" key="solution.id">
@@ -40,13 +44,6 @@
            <iframe id="result"></iframe>
          </tab-item>
        </tabs>
-
-
-  <modal name="hello-world">
-    hello, world!
-  </modal>
-
-
 
   </div>
 
@@ -68,7 +65,8 @@ export default {
   data () {
     return {
       activeTabRight: 0,
-      lesson: {}
+      lesson: {},
+      $: null
     }
   },
   methods: {
@@ -88,6 +86,7 @@ export default {
       console.log('html: ' + this.$store.state.code.html)
       console.log('css: ' + this.$store.state.code.css)
       console.log('js: ' + this.$store.state.code.js)
+      this.$("span:contains('See')").click()
     },
     marked (input) {
       return input ? marked(input) : ''
@@ -97,7 +96,7 @@ export default {
     htmlEditor, cssEditor, jsEditor
   },
   mounted () {
-    var $ = window.$ = global.jQuery = require('jquery')
+    var $ = window.$ = this.$ = global.jQuery = require('jquery')
     window.$ = $.extend(require('jquery-resizable-dom/dist/jquery-resizable.js'))
 
     $('#leftSide').resizable({
@@ -110,6 +109,7 @@ export default {
         $('iframe').css('pointer-events', 'auto')
       }
     })
+    this.$bus.$emit('showSidebar')
   },
   created () {
     this.$bus.$on('executeCode', this.executeCode)
@@ -130,6 +130,11 @@ export default {
     overflow: hidden;
   }
   /* ---- tabs --- */
+  .tabs.is-toggle li a,
+  .tabs.is-toggle:first-child li a,
+  .tabs.is-toggle:last-child li a {
+    border-radius: 0;
+  }
   .tabs .tab-content{ margin: 0; }
   .tab-list > li {
     background-color:white;
@@ -183,6 +188,11 @@ export default {
   }
   blockquote {
     padding: 1em 1.0em 0 1.5em;
+  }
+
+  table td, table th {
+      border: 1px solid black;
+      padding: 2px 10px;
   }
 }
 

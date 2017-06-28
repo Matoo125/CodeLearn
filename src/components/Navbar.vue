@@ -1,9 +1,9 @@
 <template>
   <nav class="nav has-shadow">
     <div class="nav-left">
-      <a class="nav-item">
+      <router-link class="nav-item" :to="{ name: 'Home' }">
         <span class="logo">M4CodeRun</span>
-      </a>
+      </router-link>
     </div>
 
     <div class="nav-center">
@@ -32,11 +32,7 @@
         Login
       </a>
 
-      <a class="nav-item" @click="logout" v-if="isLoggedIn">
-        Logout
-      </a>
-
-      <div class="nav-item" v-if="isLoggedIn">
+      <div class="nav-item" v-if="isLoggedIn && play">
         <div class="field is-grouped">
           <p class="control">
             <a class="button is-primary" @click="showSave">
@@ -49,7 +45,7 @@
         </div>
       </div>
 
-      <div class="nav-item" v-if="isLoggedIn">
+      <div class="nav-item" v-if="isLoggedIn && play">
         <div class="field is-grouped">
           <p class="control">
             <a class="button is-success" @click="showProjects">
@@ -69,7 +65,7 @@
               <span class="icon">
                 <i class="fa fa-floppy-o"></i>
               </span>
-              <span>Learn</span>
+              <span>Lessons</span>
             </a>
           </p>
         </div>
@@ -87,6 +83,10 @@
           </p>
         </div>
       </div>
+
+      <a class="nav-item" @click="logout" v-if="isLoggedIn">
+        Logout
+      </a>
 
     </div>
 
@@ -114,7 +114,8 @@ export default {
     return {
       sidebar: false,
       public: true,
-      page: null
+      learn: null,
+      play: null
     }
   },
   computed: {

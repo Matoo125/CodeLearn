@@ -1,10 +1,7 @@
 <template>
 <b-aside :is-show="isShown" :show-footer="false" title="Lessons" @close="isShown=false" placement="right">
 <!-- 
-     <li><a>1.0 Introduction</a></li>
-      <li><a>1.1 Tags</a></li>
       <li><a>1.2 Attributes</a></li>
-      <li><a>1.3 Text</a></li>
       <li><a>1.4 Links</a></li>
       <li><a>1.5 Tables</a></li>
       <li><a>1.6 Lists</a></li>

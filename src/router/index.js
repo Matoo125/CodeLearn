@@ -4,11 +4,6 @@ import CodeGround from '@/components/CodeGround'
 import LearnGround from '@/components/LearnGround'
 import Home from '@/components/Home'
 
-import VueBlu from 'vue-blu'
-import 'vue-blu/dist/css/vue-blu.min.css'
-
-Vue.use(VueBlu)
-
 Vue.use(Router)
 
 export default new Router({
@@ -20,7 +15,7 @@ export default new Router({
     },
     {
       path: '/playground',
-      name: 'CodeGround',
+      name: 'PlayGround',
       component: CodeGround
     },
     {

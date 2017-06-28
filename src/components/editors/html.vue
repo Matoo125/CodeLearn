@@ -1,5 +1,5 @@
 <template>
-     <div class='codeBox'>
+     <div class='codeBox' @keyup.120="run">
        <label class="editorLabel">HTML</label>
        <editor id="html" :content="html" :sync="true" lang="html" height="calc(100% - 18px)" :options="options"></editor>
      </div>
@@ -29,6 +29,9 @@ export default {
     editor
   },
   methods: {
+    run () {
+      this.$bus.$emit('executeCode')
+    },
     sendEditorContentToVuex () {
       this.$store.commit('SET_HTML', this.htmlLive)
     },
