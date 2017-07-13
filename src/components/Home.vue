@@ -59,9 +59,6 @@ export default {
 }
 </script>
 
-<style>
-</style>
-
 <style scoped>
 .authentication, .links {
   max-width: 500px;
@@ -88,4 +85,11 @@ export default {
   }
 
 }
+</style>
+
+<style>
+.authentication > .tabs > .tab-list > li {
+  background-color: transparent;
+  margin-bottom: 10px; 
+}  
 </style>

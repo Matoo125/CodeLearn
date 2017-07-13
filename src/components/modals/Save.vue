@@ -36,16 +36,17 @@ export default {
       vm.$refs.save.isLoading = true
       console.log('save has beed clicked')
       axios({
-        method: 'get',
+        method: 'post',
         url: process.env.API + 'code/save',
         withCredentials: true,
-        params: {
+        data: {
           action: 'create',
           css: vm.$store.state.code.css,
           html: this.generateHtml(vm.$store.state.code.html),
           htmlbody: vm.$store.state.code.html,
           js: vm.$store.state.code.js,
-          title: vm.title
+          title: vm.title,
+          type: 'projects'
         }
       })
       .then(function (response) {
@@ -53,6 +54,7 @@ export default {
         if (response.data.status === 'SUCCESS') { // YOU ARE LOGGED IN
           vm.$notify.success({ content: response.data.message, placement: 'top-center' })
           vm.modal.isShown = false
+          vm.$store.commit('SET_LAST_TIME_SAVED', Date.now())
         } else { // DISPLAY ERROR MESSAGE
           console.log(response.data.message)
           vm.modal.status = response.data.status

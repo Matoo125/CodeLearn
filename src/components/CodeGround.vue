@@ -88,6 +88,7 @@ export default {
     })
   },
   created () {
+    this.$bus.$emit('activeGround', 'CodeGround')
     this.$bus.$on('executeCode', this.executeCode)
   },
   beforeDestroy () {

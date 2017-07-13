@@ -10,14 +10,14 @@
       <li><a>1.9 Images</a></li>
       <li><a>1.10 Sematic</a></li>
  -->
-  <div v-for="topic in topics">
+  <div v-for="topic in this.$store.state.code.learn">
     <p class="menu-label">
       {{ topic.id }}. {{ topic.title }}
     </p>
     <ul class="menu-list">
       <li v-for="lesson in topic.lessons">
-        <a @click="lessonSelected(lesson)">
-          {{ topic.id }}.{{ lesson.turn }} {{ lesson.title }}
+        <a @click="lessonSelected(lesson.id, topic.id)">
+          {{ topic.id }}.{{ lesson.turn }} {{ lesson.title }} <span v-if="lesson.completed"> - COMPLETED</span>
         </a>
       </li>
     </ul>
@@ -37,24 +37,22 @@ export default {
   },
   mounted () {
     this.$bus.$on('showSidebar', this.toggle)
-    if (this.topics === null) this.loadLessons()
+    if (this.$store.state.code.learn === null) this.loadLessons()
   },
   methods: {
     toggle () {
       this.isShown = !this.isShown
     },
     loadLessons () {
-      axios.get(process.env.API + 'learn/load')
+      axios.get(process.env.API + 'learn/load', { withCredentials: true })
         .then(response => {
-          console.log(response)
-          this.topics = response.data.topics
-        })
-        .catch(error => {
-          console.log(error)
-        })
+          this.$store.commit('SET_LEARN', response.data.topics)
+        }).catch(error => { console.log(error) })
     },
-    lessonSelected (lesson) {
-      this.$bus.$emit('lessonSelected', lesson)
+    lessonSelected (lessonId, topicId) {
+      console.log(topicId)
+      this.$store.commit('SET_SELECTED_LESSON', { lId: lessonId, tId: topicId })
+      this.$bus.$emit('lessonSelected')
       this.isShown = false
     }
   }

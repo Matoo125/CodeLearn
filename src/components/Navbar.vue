@@ -58,7 +58,7 @@
         </div>
       </div>
 
-      <div class="nav-item" v-if="isLoggedIn">
+      <div class="nav-item" v-if="isLoggedIn && learn">
         <div class="field is-grouped">
           <p class="control">
             <a class="button is-warning" @click="showSidebar">
@@ -66,6 +66,32 @@
                 <i class="fa fa-floppy-o"></i>
               </span>
               <span>Lessons</span>
+            </a>
+          </p>
+        </div>
+      </div>
+
+      <div class="nav-item" v-if="isLoggedIn && learn && !this.$store.getters.isSelectedLessonCompleted">
+        <div class="field is-grouped">
+          <p class="control">
+            <a class="button is-success" @click="completed">
+              <span class="icon">
+                <i class="fa fa-check"></i>
+              </span>
+              <span>Completed</span>
+            </a>
+          </p>
+        </div>
+      </div>
+
+      <div class="nav-item" v-if="isLoggedIn&& learn && this.$store.getters.isSelectedLessonCompleted">
+        <div class="field is-grouped">
+          <p class="control">
+            <a class="button is-danger" @click="incompleted">
+              <span class="icon">
+                <i class="fa fa-times"></i>
+              </span>
+              <span>Incompleted</span>
             </a>
           </p>
         </div>
@@ -140,6 +166,24 @@ export default {
         console.log(error)
       })
     },
+    completed () {
+      this.$modal.confirm({
+        content: 'Have you really finished this lesson?',
+        title: 'Lesson finished',
+        okText: 'Yes',
+        cancelText: 'No',
+        onOk: () => { this.$bus.$emit('lessonCompleted') }
+      })
+    },
+    incompleted () {
+      this.$modal.confirm({
+        content: 'Do you really want to remove this lesson from completed list?',
+        title: 'Not yet completed',
+        okText: 'Yes',
+        cancelText: 'No',
+        onOk: () => { this.$bus.$emit('lessonIncomplete') }
+      })
+    },
     showLogin () {
       this.$bus.$emit('showLogin')
     },
@@ -147,7 +191,9 @@ export default {
       this.$bus.$emit('showRegister')
     },
     showSave () {
-      this.$bus.$emit('showSave')
+      if (!this.$store.state.code.lastTimeSaved) {
+        this.$bus.$emit('showSave')
+      }
     },
     showProjects () {
       this.$bus.$emit('showProjects')
@@ -158,6 +204,20 @@ export default {
     run () {
       this.$bus.$emit('executeCode')
     }
+  },
+  created () {
+    this.$bus.$on('activeGround', ground => {
+      if (ground === 'LearnGround') {
+        this.play = false
+        this.learn = true
+      } else {
+        this.learn = false
+        this.play = true
+      }
+    })
+  },
+  beforeDestroy () {
+    this.$bus.$off('activeGround')
   }
 }
 </script>

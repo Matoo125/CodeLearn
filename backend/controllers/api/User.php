@@ -3,6 +3,7 @@ namespace codelearn\controllers\api;
 
 use m4\m4mvc\helper\user\UserController;
 use m4\m4mvc\helper\Session;
+use m4\m4mvc\helper\Request;
 
 class User extends UserController
 {
@@ -17,10 +18,7 @@ class User extends UserController
 
 		// $_POST = json_decode(file_get_contents('php://input'), true);
 
-		if (!$_POST) return $this->data = [
-			'status' => 'ERROR',
-			'message'	=>	'bad response type. '
-		];
+		Request::forceMethod('post');
 
 		if (!isset($_POST['username']) || !isset($_POST['username']) ||
 			!isset($_POST['password']) || !isset($_POST['passwordCheck'])) {
@@ -68,19 +66,9 @@ class User extends UserController
 
 	public function login()
 	{
-		$_POST = json_decode(file_get_contents('php://input'), true);
+		Request::forceMethod('post');
 
-		if (!$_POST) return $this->data = [
-			'status' => 'ERROR',
-			'message'	=>	'bad response type. '
-		];
-
-		if (!$_POST['email'] || !$_POST['password']) {
-			return $this->data = [
-				'status'	=>	'ERROR',
-				'message'	=>	'Missing information'
-			];
-		}
+		Request::required('email', 'password');
 
 		if (!$user = $this->model->getByEmail($_POST['email'])) {
 		    return $this->data = [

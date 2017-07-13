@@ -50,6 +50,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 import marked from 'marked'
 import htmlEditor from './editors/html.vue'
 import cssEditor from './editors/css.vue'
@@ -73,6 +74,7 @@ export default {
     executeCode () {
       // update vuex code values
       this.$bus.$emit('update-vuex-code')
+      this.saveCode()
       var iframe = document.getElementById('result').contentWindow.document
       iframe.open()
       var content = '<html><head><style>'
@@ -87,6 +89,93 @@ export default {
       console.log('css: ' + this.$store.state.code.css)
       console.log('js: ' + this.$store.state.code.js)
       this.$("span:contains('See')").click()
+    },
+    saveCode () {
+      axios({
+        method: 'post',
+        url: process.env.API + 'code/save',
+        withCredentials: true,
+        data: {
+          action: '',
+          type: 'exercises',
+          title: this.lesson.slug,
+          css: this.$store.state.code.css,
+          html: this.generateHtml(this.$store.state.code.html),
+          htmlbody: this.$store.state.code.html,
+          js: this.$store.state.code.js
+        }
+      })
+      .then(response => {
+        console.log(response.data)
+        if (response.data.status === 'SUCCESS') { // Code has been saved
+          this.$notify.success({ content: response.data.message, placement: 'top-center' })
+        } else { // DISPLAY ERROR MESSAGE
+          console.log(response.data.message)
+          this.$notify.error({ content: response.data.message, placement: 'top-center' })
+        }
+      }).catch(error => { console.log(error) })
+    },
+    generateHtml (html) {
+      return `
+<!DOCTYPE html>
+<html>
+<head>
+  <title> ${this.title} </title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  ${html}
+  <script src="script.js"><` + `/` + `script>
+</body>
+</html>
+`
+    },
+    loadCode () {
+      axios({
+        method: 'get',
+        url: process.env.API + 'code/load',
+        withCredentials: true,
+        params: {
+          title: this.lesson.slug,
+          folder: 'exercises'
+        }
+      })
+      .then(response => {
+        console.log(response.data)
+        if (response.data.status === 'SUCCESS') {
+          this.$store.commit('SET_HTML', response.data.code.html)
+          this.$store.commit('SET_CSS', response.data.code.css)
+          this.$store.commit('SET_JS', response.data.code.js)
+          this.$bus.$emit('load-new-code-from-vuex')
+          this.$notify.success({ content: response.data.message, placement: 'top-center' })
+        }
+      })
+      .catch(error => {
+        console.log(error)
+      })
+    },
+    lessonCompleted () {
+      axios({
+        method: 'post',
+        url: process.env.API + 'learn/lessonCompleted',
+        withCredentials: true,
+        data: { lessonId: this.lesson.id }
+      }).then(response => {
+        console.log(response.data)
+        this.$store.commit('TOGGLE_COMPLETED_STATE_OF_SELECTED_LESSON')
+        // this.$store.state.code.learn
+      }).catch(error => { console.log(error) })
+    },
+    lessonIncomplete () {
+      axios({
+        method: 'post',
+        url: process.env.API + 'learn/lessonNotCompleted',
+        withCredentials: true,
+        data: { lessonId: this.lesson.id }
+      }).then(response => {
+        console.log(response.data)
+        this.$store.commit('TOGGLE_COMPLETED_STATE_OF_SELECTED_LESSON')
+      }).catch(error => { console.log(error) })
     },
     marked (input) {
       return input ? marked(input) : ''
@@ -112,14 +201,19 @@ export default {
     this.$bus.$emit('showSidebar')
   },
   created () {
+    this.$bus.$emit('activeGround', 'LearnGround')
     this.$bus.$on('executeCode', this.executeCode)
-    this.$bus.$on('lessonSelected', lesson => {
-      console.log(lesson)
-      this.lesson = lesson
+    this.$bus.$on('lessonCompleted', this.lessonCompleted)
+    this.$bus.$on('lessonIncomplete', this.lessonIncomplete)
+    this.$bus.$on('lessonSelected', () => {
+      this.lesson = this.$store.state.code.learn[this.$store.state.code.selected.topicId].lessons[this.$store.state.code.selected.lessonId]
+      this.loadCode()
     })
   },
   beforeDestroy () {
     this.$bus.$off('executeCode', this.executeCode)
+    this.$bus.$off('lessonCompleted', this.lessonCompleted)
+    this.$bus.$off('lessonIncomplete', this.lessonIncomplete)
     this.$bus.$off('lessonSelected')
   }
 }

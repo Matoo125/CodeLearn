@@ -10,6 +10,7 @@ CREATE TABLE topics(
 CREATE TABLE lessons(
 	id int primary key auto_increment,
 	title varchar(255) not null, -- eg. Working with tables, Color theory
+	slug varchar(255) not null,
 	brief text default null, -- short description of lesson
 	theory text default null, -- theoretical content of the lesson
 	exercise text default null, -- exercise for user to complete

@@ -39,10 +39,11 @@ export default {
       let vm = this
       axios({
         method: 'get',
-        url: process.env.API + 'code/getProject',
+        url: process.env.API + 'code/load',
         withCredentials: true,
         params: {
-          title: vm.selectedProject
+          title: vm.selectedProject,
+          folder: 'projects'
         }
       })
       .then(function (response) {
@@ -50,6 +51,7 @@ export default {
         vm.$store.commit('SET_HTML', response.data.code.html)
         vm.$store.commit('SET_CSS', response.data.code.css)
         vm.$store.commit('SET_JS', response.data.code.js)
+        vm.$store.commit('SET_LAST_TIME_SAVED', Date.now())
         vm.$bus.$emit('load-new-code-from-vuex')
         vm.$notify.success({ content: response.data.message, placement: 'top-center' })
         vm.modal.isShown = false

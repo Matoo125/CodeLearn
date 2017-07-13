@@ -3,13 +3,15 @@
 namespace codelearn\controllers\api;
 
 use m4\m4mvc\core\Controller;
+use m4\m4mvc\helper\Session;
 use m4\m4mvc\helper\Response;
+use m4\m4mvc\helper\Request;
 
 class Learn extends Controller
 {
 	public function index()
 	{
-
+		echo 'aaa';
 	}
 
 	public function load ()
@@ -19,18 +21,60 @@ class Learn extends Controller
 
 		$solution = $this->getModel('Solution');
 
+		$newTopics = [];
+
 		foreach ($topics as $topic) {
 			$lesson = $this->getModel('Lesson');
 			$lessons = $lesson->getByTopicId($topic['id']);
 
-			foreach ((array) $lessons as $key => $lesson) {
-				$lessons[$key]['solutions'] = $solution->getForLesson($lesson['id']);
+			$newLessons = [];
+			foreach ((array) $lessons as $key => $l) {
+				$l['solutions'] = $solution->getForLesson($l['id']);
+				$l['completed']	=	$lesson->isLessonFinished(Session::get('user_id'), $lessons[$key]['id']);
+
+				$newLessons[$l['id']] = $l;
 
 			}
 
-			$topics[$topic['id'] - 1]['lessons'] = $lessons;
+			$topic['lessons'] = $newLessons;
+
+			$newTopics[$topic['id']] = $topic;
 		}
 
-		Response::success('Topics loaded successfully', ['topics' => $topics]);
+		Response::success('Topics loaded successfully', ['topics' => $newTopics]);
+	}
+
+	public function lessonNotCompleted () {
+		Request::forceMethod('post');
+		Request::required('lessonId');
+
+		$lessonId = $_POST['lessonId'];
+		$userId = Session::get('user_id');
+
+		$model = $this->getModel('Lesson');
+		$result = $model->lessonNotFinished($userId, $lessonId);
+		if ($result) {
+			return $this->data = [
+				'status'	=>	'SUCCESS',
+				'message'	=>	'Lesson is again uncompleted'
+			];
+		}
+	}
+
+	public function lessonCompleted () {
+		Request::forceMethod('post');
+		Request::required('lessonId');
+
+		$lessonId = $_POST['lessonId'];
+		$userId = Session::get('user_id');
+
+		$model = $this->getModel('Lesson');
+		$result = $model->lessonFinished($userId, $lessonId);
+		if ($result) {
+			return $this->data = [
+				'status'	=>	'SUCCESS',
+				'message'	=>	'Lesson was marked as completed'
+			];
+		}
 	}
 }
