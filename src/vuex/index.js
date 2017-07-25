@@ -21,7 +21,8 @@ const store = new Vuex.Store({
         lessonId: null,
         topicId: null
       },
-      lastTimeSaved: null
+      lastTimeSaved: null,
+      title: null
     }
   },
   actions: {
@@ -81,6 +82,9 @@ const store = new Vuex.Store({
     SET_LAST_TIME_SAVED (state, date) {
       state.code.lastTimeSaved = date
       console.log('Last Time Saved: ' + date)
+    },
+    SET_TITLE (state, title) {
+      state.code.title = title
     }
   },
   getters: {

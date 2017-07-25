@@ -27,25 +27,26 @@ export default {
   },
   mounted () {
     this.$bus.$on('showSave', this.toggle)
+    this.$bus.$on('save', this.save)
   },
   methods: {
-    save () {
+    save (title) {
       this.$bus.$emit('update-vuex-code')
       console.log(this.generateHtml(this.$store.state.code.html))
       var vm = this
-      vm.$refs.save.isLoading = true
+      if (this.modal.isShown) vm.$refs.save.isLoading = true
       console.log('save has beed clicked')
       axios({
         method: 'post',
         url: process.env.API + 'code/save',
         withCredentials: true,
         data: {
-          action: 'create',
+          action: title ? 'update' : 'create',
           css: vm.$store.state.code.css,
           html: this.generateHtml(vm.$store.state.code.html),
           htmlbody: vm.$store.state.code.html,
           js: vm.$store.state.code.js,
-          title: vm.title,
+          title: title || vm.title,
           type: 'projects'
         }
       })
@@ -54,6 +55,7 @@ export default {
         if (response.data.status === 'SUCCESS') { // YOU ARE LOGGED IN
           vm.$notify.success({ content: response.data.message, placement: 'top-center' })
           vm.modal.isShown = false
+          vm.$refs.save.isLoading = false
           vm.$store.commit('SET_LAST_TIME_SAVED', Date.now())
         } else { // DISPLAY ERROR MESSAGE
           console.log(response.data.message)

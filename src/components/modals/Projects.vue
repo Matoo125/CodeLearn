@@ -4,8 +4,8 @@
     {{ modal.message }}
   </alert>
     <radio-group v-model="selectedProject">
-      <div v-for="project in projects">
-        <radio-button :val="project" >{{ project }}</radio-button>      
+      <div v-for="(project, index) in projects">
+        <radio-button :val="project + '+' + index" >{{ project }}</radio-button>      
       </div>
     </radio-group>
 	</modal>
@@ -42,7 +42,7 @@ export default {
         url: process.env.API + 'code/load',
         withCredentials: true,
         params: {
-          title: vm.selectedProject,
+          title: vm.selectedProject.split('+')[0],
           folder: 'projects'
         }
       })
@@ -52,6 +52,7 @@ export default {
         vm.$store.commit('SET_CSS', response.data.code.css)
         vm.$store.commit('SET_JS', response.data.code.js)
         vm.$store.commit('SET_LAST_TIME_SAVED', Date.now())
+        vm.$store.commit('SET_TITLE', vm.selectedProject.split('+')[0])
         vm.$bus.$emit('load-new-code-from-vuex')
         vm.$notify.success({ content: response.data.message, placement: 'top-center' })
         vm.modal.isShown = false

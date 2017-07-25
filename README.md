@@ -6,15 +6,25 @@ URL: http://codelearn.6f.sk
 Codelearn is online application which can help you learn to code. After registration you'll have access to LearnGround and PlayGround. Former contains different lectures and excercises about programming topics, later is here for you just to play with code and test it in your browser. In PlayGround you can save your projects and then share them or just load them later and do some changes. LearnGround saves your progress and code you wrote as an excercise for every lecture, so you can change or just check it later.
 
 ## Languages we teach
-- HTML (in progress)
+- HTML (beta)
 - CSS (in progress)
-- Javascript (in progress)
+ - Colors
+ - Selectors
+ - Positioning
+ - Backgrounds
+ - Typography
+ - Flexbox
+ - Animation
+ - Media Queries
+ - Pseudo Classes
+ - Pseudo Elements
+ - Margins, Paddings, Borders
+- Javascript (next in line)
 
 ## Note
 To HTML editor lives inside of `<body>` tag, so it's better to avoid using `<!DOCTYPE>`, `<html>` and `<head>` elements.
 
 ## BUG
-- there is no way to save project which already exists (working on fix)
 
 ## LearnGround
 Learn Ground is place where you'll learn to code. It consists of 3 parts and you can change width of left and right size by dragging handle bar.
@@ -42,7 +52,8 @@ In contrast to Learn Ground, there are no tabs, but 3 areas above each other for
 There is your result page
 #### Navbar
 *Save* - Opens modal to save project
-*Copy* - Create copy of this project (save it as another project) (in progress)
+*Fork* - Create copy of this project
+*New* - Create new project
 *Delete* - Removes project, irreversable action
 *Projects* - Opens modal with projects you saved
 *Download* - Downloads zipped archive with your project (in progress)

@@ -23,14 +23,14 @@
        <tabs type="toggle" :is-full-width="true" class="tabs-scroll">
          <tab-item label="Prepare" icon="book">
           <div v-if="lesson.id" class="title is-2 has-text-centered lessonHeader">
-            {{ lesson.topic_id }}.{{ lesson.turn }} - {{ lesson.title }} | Theory
+            {{ lesson.topic_id }}.{{ lesson.turn }} - {{ lesson.title }}
             <hr>
           </div>
            <div class="inTab" v-html="marked(lesson.theory)"></div>
          </tab-item>
          <tab-item label="Exercise" icon="thumb-tack">
            <div v-if="lesson.id" class="title is-2 has-text-centered lessonHeader">
-            {{ lesson.topic_id }}.{{ lesson.turn }} - {{ lesson.title }} | Practise
+            {{ lesson.topic_id }}.{{ lesson.turn }} - {{ lesson.title }}
              <hr>
           </div>
            <div class="inTab" v-html="marked(lesson.exercise)"></div>
@@ -77,7 +77,7 @@ export default {
       this.saveCode()
       var iframe = document.getElementById('result').contentWindow.document
       iframe.open()
-      var content = '<html><head><style>'
+      var content = '<html><head><style type="text/css">'
       content += this.$store.state.code.css
       content += '</style></head><body>'
       content += this.$store.state.code.html
@@ -220,8 +220,9 @@ export default {
 </script>
 
 <style lang="scss">
-  html {
+  body, button, input, select, textarea {
     overflow: hidden;
+    font-family: BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
   }
   /* ---- tabs --- */
   .tabs.is-toggle li a,
@@ -254,6 +255,28 @@ export default {
   display: flex;
 }
 
+.tab-pane {
+  line-height: 1.5;
+  h1, h2, h3, h4 {
+    margin-bottom: 1.5rem;
+    font-weight: 300;
+    line-height: 1.125;
+  }
+  h1 {
+    font-size: 3rem;
+  }
+  h2 {
+    font-size: 2.5rem;
+  }
+  h3 {
+    font-size: 2rem;
+  }
+  h4 {
+    font-size: 1.5rem;
+  }
+
+}
+
 
 .inTab a {
   display: inline;
@@ -266,7 +289,6 @@ export default {
 }
 
 .inTab {
-  line-height: 1.7em;
   white-space: normal;
   ul, ol {
     display: block !important;

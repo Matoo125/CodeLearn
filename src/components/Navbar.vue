@@ -45,6 +45,34 @@
         </div>
       </div>
 
+      <div class="nav-item" v-if="isLoggedIn && play && this.$store.state.code.lastTimeSaved">
+        <div class="field is-grouped">
+          <p class="control">
+            <a class="button is-danger" @click="() => { this.$bus.$emit('showSave') }">
+              <span class="icon">
+                <i class="fa fa-code-fork"></i>
+              </span>
+              <span>Fork</span>
+            </a>
+          </p>
+        </div>
+      </div>
+
+
+      <div class="nav-item" v-if="isLoggedIn && play && this.$store.state.code.lastTimeSaved">
+        <div class="field is-grouped">
+          <p class="control">
+            <a class="button is-warning" disabled @click="showSave">
+              <span class="icon">
+                <i class="fa fa-plus"></i>
+              </span>
+              <span>New</span>
+            </a>
+          </p>
+        </div>
+      </div>
+
+
       <div class="nav-item" v-if="isLoggedIn && play">
         <div class="field is-grouped">
           <p class="control">
@@ -193,6 +221,8 @@ export default {
     showSave () {
       if (!this.$store.state.code.lastTimeSaved) {
         this.$bus.$emit('showSave')
+      } else {
+        this.$bus.$emit('save', this.$store.state.code.title)
       }
     },
     showProjects () {
